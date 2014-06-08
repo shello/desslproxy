@@ -195,7 +195,9 @@ function make_curl_request($url) {
     // Make request
     $curl_result = curl_exec($curl_req);
     if ($curl_result === FALSE) {
-        exit_status(500, 'cURL error ' . curl_errno($curl_req));
+        $curl_error_code = curl_errno($curl_req);
+        $curl_error_message = curl_error($curl_req);
+        exit_status(500, "cURL error: $curl_error_message ($curl_error_code)");
     }
     $curl_info = curl_getinfo($curl_req);
 
