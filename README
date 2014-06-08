@@ -15,8 +15,8 @@ REQUIREMENTS
 
 USING
 =====
-    Set the constants in dessl.php to sensible values. Keep in mind that to
-    prevent abuses you must set up a secret.
+    Copy 'config.example.php' to 'config.php' and set sensible values. Keep in
+    mind that to prevent abuses you must set up a secret.
 
     Generate (relative) URL:
         $ php dessl.php <url>

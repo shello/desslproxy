@@ -1,4 +1,5 @@
 <?php
+
 /**
  * deSSL Proxy
  *
@@ -11,12 +12,7 @@
  *   /<hmac(secret, url)>/<url, urlencoded>
  */
 
-define('DESSL_HMAC_SECRET', '');
-define('DESSL_HMAC_ALGO', 'sha256');
-
-define('DESSL_FOLLOW_REDIRECT', false);
-
-define('DESSL_CA_CERT_BUNDLE_PATH', '/etc/ssl/cert.pem');
+include_once "config.php";
 
 /**
  * Generates an HMAC for a given URL
