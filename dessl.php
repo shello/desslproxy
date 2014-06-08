@@ -6,7 +6,7 @@
  * Because some software screws up big time with TLS/SSL and
  *   ain't nobody got time for that.
  *
- * Essentially a HTTPS proxy built to deal with TLS/SSL for clients who can't.
+ * Essentially an HTTPS proxy built to deal with TLS/SSL for clients who can't.
  *
  * Requests:
  *   /<hmac(secret, url)>/<url, urlencoded>
@@ -198,7 +198,7 @@ function set_response_headers($status, $headers) {
 }
 
 /**
- * Parses a HTTP Header string
+ * Parses an HTTP Header string
  * @param  string $headers A string of HTTP Headers
  * @return array An key/value array with the fields in the suppied HTTP header
  */
@@ -216,7 +216,7 @@ function parse_http_headers($headers) {
 }
 
 /**
- * Fetches a given URL with cURL. If the URL has a HTTPS protocol this fails if
+ * Fetches a given URL with cURL. If the URL has an HTTPS protocol this fails if
  * the certificate is not valid.
  * @param  string $url The URL to fetch
  * @return array An array with the HTTP response status code, array of HTTP
