@@ -247,7 +247,7 @@ function proxy_request() {
         exit_status(403, "Method/URL Not Allowed.");
     }
 
-    // Drop with 403 if HMAC doesn't match
+    // Drop with an HTTP 400 if HMAC doesn't match
     if (!verify_hmac($hmac, $url)) {
         exit_status(400, "Wrong Authentication.");
     }
