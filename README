@@ -10,7 +10,7 @@ Essentially a HTTPS proxy built to deal with TLS/SSL for clients who can't.
 REQUIREMENTS
 ============
     - PHP >= 5.4.0
-    - cURL >= 7.10 built with OpenSSL
+    - cURL >= 7.18.1 built with OpenSSL
 
 
 USING
