@@ -1,19 +1,19 @@
-README
-======
- __   ___  __   __           __   __   __
-|  \ |__  /__` /__` |       |__) |__) /  \ \_/ \ /
-|__/ |___ .__/ .__/ |___    |    |  \ \__/ / \  |
+
+                __   ___  __   __           __   __   __
+               |  \ |__  /__` /__` |       |__) |__) /  \ \_/ \ /
+               |__/ |___ .__/ .__/ |___    |    |  \ \__/ / \  |
+
 
 Essentially a HTTPS proxy built to deal with TLS/SSL for clients who can't.
 
 
-REQUIREMENTS
+Requirements
 ============
     - PHP >= 5.4.0
     - cURL >= 7.18.1 built with OpenSSL
 
 
-USING
+Usage
 =====
     Copy 'config.example.php' to 'config.php' and set sensible values. Keep in
     mind that to prevent abuses you must set up a secret.
