@@ -17,10 +17,10 @@ include_once "config.php";
 /**
  * Generates an HMAC for a given URL
  * @param  string $url The URL used as the message for the HMAC
- * @return string The HMAC for the given URL
+ * @return string The HMAC for the given URL in raw binary form
  */
 function generate_hmac($url) {
-    return strtolower(hash_hmac(DESSL_HMAC_ALGO, $url, DESSL_HMAC_SECRET));
+    return hash_hmac(DESSL_HMAC_ALGO, $url, DESSL_HMAC_SECRET, true);
 }
 
 /**
@@ -30,26 +30,57 @@ function generate_hmac($url) {
  * @return bool TRUE if the URL verifies against the HMAC; FALSE otherwise.
  */
 function verify_hmac($hmac, $url) {
-    return strtolower($hmac) === generate_hmac($url);
+    return $hmac === generate_hmac($url);
 }
 
 /**
- * Generates a URL for deSSL Proxy
+ * Encodes data in base64, with / and + swapped by _ and - respectively.
+ * @param string $data The data to be encoded
+ * @return string Encoded data in base64.
+ */
+function base64_urlsafe_encode($data) {
+    return strtr(base64_encode($data), '/+', '_-');
+}
+
+/**
+ * Decodes data in base64 format, with / and + swapped by _ and - respectively.
+ * @param string $data The base64 encoded data
+ * @return string Decoded data, or FALSE on failure.
+ */
+function base64_urlsafe_decode($data) {
+    return base64_decode(strtr($data, '_-', '/+'));
+}
+
+/**
+ * Generates a deSSL URL to proxy a given URL
  * @param string $url The URL to proxy
- * @return string A valid URL for this proxy
+ * @return string A relative URL that proxies the given URL
  */
-function generate_url($url) {
-    return '/' . generate_hmac($url) . '/' . $url;
+function generate_proxy_url($url) {
+    return '/' . base64_urlsafe_encode(generate_hmac($url) . $url);
 }
 
 /**
- * Fetches the parameters from the request to this proxy
- * @return array An array with the HMAC and percent-decoded URL
+ * Parses a deSSL URL into its components and verifies the authenticity of the
+ * request
+ * @param string $proxy_url The URL used to access the deSSL proxy
+ * @return string|bool The URL in string form, or 'FALSE' if the decoding or
+ *      HMAC verification fails.
  */
-function get_request_parameters() {
-    list(, $hmac, $url) = explode('/', $_SERVER['REQUEST_URI'] , 3);
+function parse_proxy_url($proxy_url) {
+    $decoded = base64_urlsafe_decode(trim($proxy_url, '/'));
 
-    return array($hmac, urldecode($url));
+    $url = FALSE;
+    if ($decoded !== FALSE && strlen($decoded) > DESSL_HMAC_LENGTH) {
+        $hmac = substr($decoded, 0, DESSL_HMAC_LENGTH);
+        $pre_url = substr($decoded, DESSL_HMAC_LENGTH);
+
+        if (verify_hmac($hmac, $pre_url)) {
+            $url = $pre_url;
+        }
+    }
+
+    return $url;
 }
 
 /**
@@ -162,7 +193,7 @@ function set_response_headers($status, $headers) {
     // Deal with redirections
     if (in_array($status, [301, 302, 303, 307])
         && array_key_exists('Location', $headers)) {
-        header('Location: ' . generate_url($headers['Location']));
+        header('Location: ' . generate_proxy_url($headers['Location']));
     }
 }
 
@@ -249,16 +280,16 @@ function exit_usage($args) {
  * Run the proxy
  */
 function proxy_request() {
-    list($hmac, $url) = get_request_parameters();
+    $url = parse_proxy_url($_SERVER['REQUEST_URI']);
+
+    // Drop with an HTTP 400 if HMAC doesn't match or if URL cannot be decoded
+    if ($url === FALSE) {
+        exit_status(400, "Bad format");
+    }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'GET'
         || !('https://' === substr($url, 0, 8) || 'http://' === substr($url, 0, 7))) {
         exit_status(403, "Method/URL Not Allowed.");
-    }
-
-    // Drop with an HTTP 400 if HMAC doesn't match
-    if (!verify_hmac($hmac, $url)) {
-        exit_status(400, "Wrong Authentication.");
     }
 
     // Make the request
@@ -278,7 +309,7 @@ if (php_sapi_name() !== 'cli') {
     if ($argc === 1) {
         exit_usage($argv);
     } else {
-        print(generate_url($argv[1]) . "\n");
+        print(generate_proxy_url($argv[1]) . "\n");
         exit();
     }
 }
