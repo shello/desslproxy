@@ -116,6 +116,17 @@ function get_request_headers_curl() {
  */
 function set_response_headers($status, $headers) {
     $filter_headers = [
+        // RFC 7231, 3.1. Representation Metadata
+        'Content-Type',
+        'Content-Encoding',
+        'Content-Language',
+        'Content-Location',
+
+        // RFC 7231, 3.2. Payload Semantics
+        'Content-Length',
+        'Content-Range',
+        'Trailer',
+
         // RFC 7231, 7.1. Control Data
         // Location is missing since it must be rewritten
         'Age',
