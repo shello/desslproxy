@@ -7,6 +7,12 @@
 Essentially, an HTTPS proxy built to deal with TLS/SSL for clients who can't.
 
 
+Goals
+=====
+    - Proxy HTTP and HTTPS requests securely with good support for TLS/SSL;
+    - Prevent abuses by authenticating the requests;
+
+
 Requirements
 ============
     - PHP >= 5.4.0
