@@ -1,0 +1,25 @@
+README
+======
+ __   ___  __   __           __   __   __
+|  \ |__  /__` /__` |       |__) |__) /  \ \_/ \ /
+|__/ |___ .__/ .__/ |___    |    |  \ \__/ / \  |
+
+Essentially a HTTPS proxy built to deal with TLS/SSL for clients who can't.
+
+
+REQUIREMENTS
+============
+    - PHP >= 5.4.0
+    - cURL >= 7.10 built with OpenSSL
+
+
+USING
+=====
+    Set the constants in dessl.php to sensible values. Keep in mind that to
+    prevent abuses you must set up a secret.
+
+    Generate (relative) URL:
+        $ php dessl.php <url>
+
+    Request proxy:
+        Use the generated URL with deSSL Proxy.
