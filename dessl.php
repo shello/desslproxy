@@ -285,7 +285,7 @@ function proxy_request() {
     }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'GET'
-        || !('https://' === substr($url, 0, 8) || 'http://' === substr($url, 0, 7))) {
+        || preg_match('#^https?://#', $url) === 0) {
         exit_status(403, "Method/URL Not Allowed.");
     }
 
