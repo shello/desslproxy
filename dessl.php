@@ -7,9 +7,6 @@
  *   ain't nobody got time for that.
  *
  * Essentially, an HTTPS proxy built to deal with TLS/SSL for clients who can't.
- *
- * Requests:
- *   /<hmac(secret, url)>/<url, urlencoded>
  */
 
 include_once "config.php";
